@@ -67,7 +67,6 @@ export async function POST(req: Request) {
     );
 
     // Check if upload succeeded
-    const videoIdMatch = result.match(/Done!\s*\((\w+)\)/);
     const uploaded = result.includes("Done!");
 
     if (uploaded) {

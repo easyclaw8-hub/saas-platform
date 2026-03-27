@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { getServiceSupabase } from "@/lib/supabase";
-import { readFileSync, statSync, existsSync } from "fs";
+import { readFileSync, statSync, existsSync, openSync, readSync, closeSync } from "fs";
 
 export async function GET(req: Request) {
   const { userId } = await auth();
@@ -41,9 +41,9 @@ export async function GET(req: Request) {
     const chunkSize = end - start + 1;
 
     const buffer = Buffer.alloc(chunkSize);
-    const fd = require("fs").openSync(job.video_path, "r");
-    require("fs").readSync(fd, buffer, 0, chunkSize, start);
-    require("fs").closeSync(fd);
+    const fd = openSync(job.video_path, "r");
+    readSync(fd, buffer, 0, chunkSize, start);
+    closeSync(fd);
 
     return new Response(buffer, {
       status: 206,

@@ -13,7 +13,7 @@ export async function POST() {
   const supabase = getServiceSupabase();
 
   // Get or create user settings
-  let { data: settings } = await supabase
+  const { data: settings } = await supabase
     .from("user_settings")
     .select("stripe_customer_id")
     .eq("clerk_user_id", userId)
