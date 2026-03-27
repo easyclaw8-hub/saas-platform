@@ -60,7 +60,9 @@ const TOPIC_RSS: Record<string, { rssUrl: string; relatedUrl: string; mode: stri
 
 // ─── Step 1: Fetch & Parse RSS ───
 async function fetchRSS(url: string): Promise<{ title: string; source: string }[]> {
-  const res = await fetch(url, { signal: AbortSignal.timeout(15000) });
+  const res = await fetch(url, {
+    headers: { "User-Agent": "Mozilla/5.0" },
+  });
   const xml = await res.text();
 
   const items: { title: string; source: string }[] = [];
@@ -210,7 +212,6 @@ async function callDeepSeek(prompt: string, maxTokens = 8192, temperature = 0.7)
       max_tokens: maxTokens,
       temperature,
     }),
-    signal: AbortSignal.timeout(180000),
   });
 
   const data = await res.json();
@@ -262,7 +263,6 @@ async function grokReview(title: string, script: string): Promise<{ score: numbe
         stream: false,
         temperature: 0.3,
       }),
-      signal: AbortSignal.timeout(30000),
     });
 
     const data = await res.json();
@@ -324,7 +324,6 @@ async function triggerProduce(payload: {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
-    signal: AbortSignal.timeout(10000),
   });
   return await res.json();
 }
