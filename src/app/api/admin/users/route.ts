@@ -1,4 +1,4 @@
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { auth, currentUser, clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { getServiceSupabase } from "@/lib/supabase";
 
@@ -26,6 +26,27 @@ export async function GET() {
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  // Enrich with Clerk emails for users missing email
+  const clerk = await clerkClient();
+  for (const u of users || []) {
+    if (!u.email && u.clerk_user_id) {
+      try {
+        const clerkUser = await clerk.users.getUser(u.clerk_user_id);
+        const email = clerkUser.emailAddresses?.[0]?.emailAddress || "";
+        if (email) {
+          u.email = email;
+          // Save email to Supabase for next time
+          await supabase
+            .from("user_settings")
+            .update({ email })
+            .eq("clerk_user_id", u.clerk_user_id);
+        }
+      } catch {
+        // ignore - user may not exist in Clerk
+      }
+    }
   }
 
   // Also get job counts per user
