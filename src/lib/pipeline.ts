@@ -88,7 +88,7 @@ async function buildContent(topics: string[]) {
 
   const mainNews = "【主要新聞】" + mainArticle.title + (mainArticle.source ? "（" + mainArticle.source + "）" : "");
   const relatedNews = related.map((r, i) => "【相關" + (i + 1) + "】" + r.title).join("\n");
-  const allSources = [...new Set([mainArticle.source, ...related.map((r) => r.source)].filter(Boolean))].join("、");
+  const allSources = Array.from(new Set([mainArticle.source, ...related.map((r) => r.source)].filter(Boolean))).join("、");
 
   return {
     title: mainArticle.title,
