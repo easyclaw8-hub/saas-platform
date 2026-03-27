@@ -49,6 +49,7 @@ export default function DashboardPage() {
   const [uploading, setUploading] = useState<string | null>(null);
   const [credits, setCredits] = useState(0);
   const [buyingCredits, setBuyingCredits] = useState(false);
+  const [referralCode, setReferralCode] = useState("");
 
   const DURATION_CREDITS: Record<string, number> = { "5": 200, "10": 250, "15": 300 };
 
@@ -63,6 +64,20 @@ export default function DashboardPage() {
     } catch {
       // ignore
     }
+  }, []);
+
+  // Init user (handles welcome credits + referral)
+  useEffect(() => {
+    const ref = new URLSearchParams(window.location.search).get("ref");
+    fetch(`/api/user${ref ? `?ref=${ref}` : ""}`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.settings) {
+          setCredits(d.settings.credits || 0);
+          setReferralCode(d.settings.referral_code || "");
+        }
+      })
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -477,6 +492,30 @@ export default function DashboardPage() {
             )}
           </div>
         </section>
+
+        {/* Referral Code */}
+        {referralCode && (
+          <section className="mt-8 p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
+            <h2 className="text-lg font-semibold mb-2">🎁 邀請朋友賺 Credits</h2>
+            <p className="text-sm text-gray-400 mb-4">
+              分享你嘅邀請碼，朋友註冊後你哋各得 200 credits！
+            </p>
+            <div className="flex items-center gap-3">
+              <code className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-orange-400 font-mono">
+                {referralCode}
+              </code>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(`https://videomoney.video/sign-up?ref=${referralCode}`);
+                  setMessage("邀請連結已複製！");
+                }}
+                className="px-4 py-2 bg-orange-500/20 border border-orange-500/30 text-orange-400 rounded-lg text-sm hover:bg-orange-500/30 transition-all"
+              >
+                複製連結
+              </button>
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

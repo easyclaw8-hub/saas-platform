@@ -184,52 +184,96 @@ export default function Home() {
 
       {/* Pricing */}
       <section id="pricing" className="py-20 px-6 border-t border-white/5">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4">簡單定價</h2>
-          <p className="text-gray-400 text-center mb-16">買 Credits，用幾多付幾多</p>
+          <p className="text-gray-400 text-center mb-6">註冊即送 300 credits，邀請朋友再賺 200</p>
 
-          {/* Credits Package */}
-          <div className="max-w-md mx-auto mb-16">
-            <div className="relative p-8 rounded-2xl border border-orange-500 bg-orange-500/5">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-orange-500 rounded-full text-xs font-semibold">
-                Credits 套餐
-              </div>
-              <div className="text-center">
-                <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-5xl font-bold">$10</span>
-                  <span className="text-gray-400 text-sm">USD</span>
-                </div>
-                <div className="mt-2 text-2xl text-orange-400 font-bold">1,000 Credits</div>
-                <p className="mt-2 text-gray-400 text-sm">Credits 永不過期，用完再買</p>
-              </div>
-              <Link
-                href="/sign-up"
-                className="mt-6 block w-full py-3 rounded-xl font-semibold text-center bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 shadow-lg shadow-orange-500/25 transition-all"
+          {/* Plans */}
+          <div className="grid sm:grid-cols-3 gap-6 mb-12">
+            {[
+              {
+                name: "單次購買",
+                price: "$10",
+                period: "一次性",
+                credits: "800",
+                desc: "唔使綁定，用完再買",
+                highlight: false,
+              },
+              {
+                name: "Starter",
+                price: "$20",
+                period: "每月",
+                credits: "2,500",
+                desc: "最受歡迎，適合日更頻道",
+                highlight: true,
+              },
+              {
+                name: "Business",
+                price: "$50",
+                period: "每月",
+                credits: "7,500",
+                desc: "多頻道 / 高產量創作者",
+                highlight: false,
+              },
+            ].map((plan) => (
+              <div
+                key={plan.name}
+                className={`relative p-8 rounded-2xl border transition-all ${
+                  plan.highlight
+                    ? "border-orange-500 bg-orange-500/5 scale-[1.02]"
+                    : "border-white/10 bg-white/[0.02]"
+                }`}
               >
-                立即開始
-              </Link>
-            </div>
+                {plan.highlight && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-orange-500 rounded-full text-xs font-semibold">
+                    最受歡迎
+                  </div>
+                )}
+                <h3 className="text-lg font-semibold">{plan.name}</h3>
+                <div className="mt-4 flex items-baseline gap-1">
+                  <span className="text-4xl font-bold">{plan.price}</span>
+                  <span className="text-gray-400 text-sm">/ {plan.period}</span>
+                </div>
+                <div className="mt-2 text-2xl text-orange-400 font-bold">{plan.credits} Credits</div>
+                <p className="mt-2 text-sm text-gray-400">{plan.desc}</p>
+                <Link
+                  href="/sign-up"
+                  className={`mt-6 block w-full py-3 rounded-xl font-semibold text-center transition-all ${
+                    plan.highlight
+                      ? "bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 shadow-lg shadow-orange-500/25"
+                      : "border border-white/20 hover:border-white/40 hover:bg-white/5"
+                  }`}
+                >
+                  立即開始
+                </Link>
+              </div>
+            ))}
           </div>
 
           {/* Credits Usage */}
           <h3 className="text-xl font-semibold text-center mb-8">Credits 消耗</h3>
           <div className="grid sm:grid-cols-3 gap-6">
             {[
-              { duration: "5 分鐘", credits: "200", videos: "可生成 5 條片" },
-              { duration: "10 分鐘", credits: "250", videos: "可生成 4 條片" },
-              { duration: "15 分鐘", credits: "300", videos: "可生成 3 條片" },
+              { duration: "5 分鐘", credits: "200" },
+              { duration: "10 分鐘", credits: "250" },
+              { duration: "15 分鐘", credits: "300" },
             ].map((item) => (
               <div key={item.duration} className="p-6 rounded-2xl border border-white/10 bg-white/[0.02] text-center">
                 <div className="text-lg font-semibold">{item.duration}</div>
                 <div className="mt-2 text-3xl font-bold text-orange-400">{item.credits}</div>
                 <div className="text-sm text-gray-400">credits / 條片</div>
-                <div className="mt-3 text-xs text-gray-500">$10 = {item.videos}</div>
               </div>
             ))}
           </div>
 
+          {/* Bonuses */}
+          <div className="mt-12 p-6 rounded-2xl border border-green-500/20 bg-green-500/5 text-center">
+            <h3 className="text-lg font-semibold mb-2">🎁 新用戶獎勵</h3>
+            <p className="text-gray-300">註冊即送 <span className="text-green-400 font-bold">300 credits</span> · 邀請朋友各得 <span className="text-green-400 font-bold">200 credits</span></p>
+          </div>
+
           {/* Features */}
-          <div className="mt-12 grid sm:grid-cols-2 gap-4 max-w-lg mx-auto">
+          <div className="mt-8 grid sm:grid-cols-2 gap-4 max-w-lg mx-auto">
             {[
               "所有新聞主題",
               "3 種語言（廣粵普英）",
